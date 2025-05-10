@@ -47,6 +47,7 @@ export const registerUser = async (username, name, email, password, bio, file) =
   return { user };
 };
 
+
 export const loginUser = async (email, password) => {
   const user = await User.findOne({ email }).select(
     "username email password avatar role"

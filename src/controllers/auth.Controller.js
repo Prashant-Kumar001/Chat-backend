@@ -50,7 +50,7 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    return res.status(200).cookie("token", token, cookieOptions).json({
+    return res.status(200).cookie("auth_token", token, cookieOptions).json({
       success: true,
       user,
       message: "logged in successful",
