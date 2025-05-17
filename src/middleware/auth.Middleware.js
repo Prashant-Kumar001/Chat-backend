@@ -78,7 +78,7 @@ export const protectAdmin = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const admin = await User.findById(decoded.id).select("-password");
     req.admin = admin;
-    req.adminKey = process.env.ADMIN_SECRET_KEY;
+    req.adminKey = process.env.ADMIN_KEY;
     next();
   } catch (error) {
     return res.status(401).json({
@@ -89,10 +89,11 @@ export const protectAdmin = async (req, res, next) => {
 };
 
 export const adminOnly = (req, res, next) => {
+
   if (
     req.admin &&
     req.admin.role === "admin" &&
-    req.adminKey.toString() === process.env.ADMIN_SECRET_KEY.toString()
+    req.adminKey.toString() === process.env.ADMIN_KEY.toString()
   ) {
     next();
   } else {
