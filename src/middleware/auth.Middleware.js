@@ -64,8 +64,8 @@ export const protectAdmin = async (req, res, next) => {
 
   if (req.headers.authorization?.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies && req.cookies.adminToken) {
-    token = req.cookies.adminToken;
+  } else if (req.cookies && req.cookies.admin_Token) {
+    token = req.cookies.admin_Token;
   }
 
   if (!token) {

@@ -158,13 +158,10 @@ export const admin = async (req, res) => {
     });
 
   } catch (error) {
-    return ResponseHandler.error(
-      res,
-      error.statusCode ||
-      statusCodes.INTERNAL_SERVER_ERROR ||
-      "Internal Server Error",
-      error.message
-    );
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 export const logout = async (req, res) => {
