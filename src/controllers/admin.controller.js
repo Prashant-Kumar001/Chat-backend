@@ -9,6 +9,14 @@ import {
 import statusCodes from "../utils/statusCodes.js";
 import { generateToken } from "../utils/helper.js";
 
+const cookieOptions = {
+  maxAge: 15 * 24 * 60 * 60 * 1000,
+  sameSite: "none",
+  httpOnly: true,
+  secure: true,
+};
+
+
 export const fetchUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -124,20 +132,13 @@ export const admin = async (req, res) => {
   try {
     const user = await adminLogin(email, password);
 
-    if (!admin) {
+    if (!user) {
       return res.status(404).json({
         admin: false,
         timestamp: new Date().toISOString(),
+        message: "Invalid credentials",
       })
     }
-
-    const metaData = {
-      timestamp: new Date().toISOString(),
-      ip: req.ip,
-      userAgent: req.headers["user-agent"],
-      expire: "15m",
-    };
-
 
     const token = generateToken(user)
     if (!token) {
@@ -148,21 +149,13 @@ export const admin = async (req, res) => {
       );
     }
 
-
-    res.cookie("adminToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      expires: new Date(Date.now() + 15 * 60 * 1000), // ✅ 15 minutes expiration
-    });
-
-
-    return res.status(200).json({
+    return res.status(200).cookie("admin_Token", token, cookieOptions).json({
+      success: true,
+      user,
+      message: "logged in successful",
       username: user.username,
       role: user.role,
-      status: user.status
-    })
-
+    });
 
   } catch (error) {
     return ResponseHandler.error(
